@@ -108,21 +108,21 @@ export default function Admin() {
               <h2 className="text-2xl font-bold text-primary mb-6">Admin Login</h2>
               
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel className="text-foreground text-base font-semibold">Username</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Enter your username"
                             {...field}
-                            className="bg-[#F7F2FA]"
+                            className="bg-background border-2 border-input py-5 text-foreground"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="font-medium" />
                       </FormItem>
                     )}
                   />
@@ -132,23 +132,23 @@ export default function Admin() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-foreground text-base font-semibold">Password</FormLabel>
                         <FormControl>
                           <Input
                             type="password"
                             placeholder="Enter your password"
                             {...field}
-                            className="bg-[#F7F2FA]"
+                            className="bg-background border-2 border-input py-5 text-foreground"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="font-medium" />
                       </FormItem>
                     )}
                   />
 
                   <Button
                     type="submit"
-                    className="w-full py-2 rounded-full text-sm font-medium bg-primary hover:bg-primary-dark text-white"
+                    className="w-full py-6 rounded-full text-base font-semibold bg-primary hover:opacity-90 text-primary-foreground"
                     disabled={form.formState.isSubmitting}
                   >
                     {form.formState.isSubmitting ? "Logging in..." : "Login"}
@@ -156,7 +156,7 @@ export default function Admin() {
                 </form>
               </Form>
               
-              <div className="mt-4 text-center text-sm text-muted-foreground">
+              <div className="mt-4 text-center text-base font-medium text-foreground">
                 <p>Default credentials: admin / admin123</p>
               </div>
             </CardContent>
