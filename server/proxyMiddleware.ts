@@ -69,19 +69,17 @@ export const createProxyHandler = () => {
     try {
       // Get the target URL from either query parameters (GET) or request body (POST)
       let targetUrl = req.method === 'GET' ? req.query.url as string : req.body.url;
-      const hideReferer = req.method === 'GET' 
-        ? req.query.hideReferer === 'true' 
-        : req.body.hideReferer === true;
-      const removeCookies = req.method === 'GET' 
-        ? req.query.removeCookies === 'true' 
-        : req.body.removeCookies === true;
       
       if (!targetUrl) {
         return res.status(400).json({ message: 'No URL provided' });
       }
       
-      // Parse the URL to make sure it's valid
-      const parsedUrl = new URL(targetUrl);
+      try {
+        // Validate URL format
+        new URL(targetUrl);
+      } catch (error) {
+        return res.status(400).json({ message: 'Invalid URL format' });
+      }
       
       // Check if the visitor is blocked
       const blocked = await isVisitorBlocked(req);
@@ -90,11 +88,21 @@ export const createProxyHandler = () => {
         return res.status(403).json({ message: 'Access blocked by administrator' });
       }
       
-      // Log successful request before proxying
-      await logProxyRequest(req, targetUrl, 'success');
-
-      // For POST requests, redirect to GET with all parameters
+      // Get proxy options from query parameters or request body
+      const hideReferer = req.method === 'GET' 
+        ? req.query.hideReferer === 'true' 
+        : req.body.hideReferer === true;
+      
+      const removeCookies = req.method === 'GET' 
+        ? req.query.removeCookies === 'true' 
+        : req.body.removeCookies === true;
+      
+      // For POST requests, return URL to redirect to
       if (req.method === 'POST') {
+        // Log the proxy request
+        await logProxyRequest(req, targetUrl, 'success');
+        
+        // Build the URL for client-side redirect
         const params = new URLSearchParams();
         params.append('url', targetUrl);
         if (hideReferer) params.append('hideReferer', 'true');
@@ -107,14 +115,22 @@ export const createProxyHandler = () => {
         });
       }
       
-      // Only for GET requests, actually proxy the content
-      // Configure proxy options
+      // For GET requests, create a proxy middleware
+      // Log the request first
+      await logProxyRequest(req, targetUrl, 'success');
+      
+      // Setup proxy options
       const options = {
         target: targetUrl,
         changeOrigin: true,
         followRedirects: true,
-        secure: true,
-        onProxyReq: (proxyReq: any, req: Request) => {
+        secure: false, // Allow insecure SSL certificates for proxy
+        ws: false, // Don't proxy websockets
+        logLevel: 'error',
+        pathRewrite: {
+          '^/api/proxy': '',
+        },
+        onProxyReq: (proxyReq: any) => {
           // Remove referer if requested
           if (hideReferer) {
             proxyReq.removeHeader('referer');
@@ -128,19 +144,28 @@ export const createProxyHandler = () => {
         },
         onProxyRes: (proxyRes: any) => {
           // Remove cookies from response if requested
-          if (removeCookies) {
+          if (removeCookies && proxyRes.headers['set-cookie']) {
             delete proxyRes.headers['set-cookie'];
           }
         },
-        onError: (err: Error) => {
+        onError: (err: Error, req: Request, res: Response) => {
           console.error('Proxy error:', err);
-          res.status(500).json({ message: 'Proxy error', error: err.message });
+          
+          // Log the error
+          logProxyRequest(req, targetUrl, 'error').catch(e => {
+            console.error('Error logging failed proxy request:', e);
+          });
+          
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            message: 'Proxy error', 
+            error: err.message 
+          }));
         }
       };
       
       // Create and apply the proxy middleware
-      const proxyMiddleware = createProxyMiddleware(options);
-      return proxyMiddleware(req, res, next);
+      createProxyMiddleware(options)(req, res, next);
     } catch (error) {
       console.error('Proxy handler error:', error);
       return res.status(500).json({ 
