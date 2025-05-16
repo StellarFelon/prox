@@ -57,53 +57,7 @@ export default function Home() {
             />
           </div>
         </div>
-        
-        {/* Features Section */}
-        <section id="features" className="py-12 scroll-mt-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-primary">Key Features</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <FeatureCard 
-                key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-              />
-            ))}
-          </div>
-        </section>
-        
-        {/* How It Works Section */}
-        <section className="py-12">
-          <h2 className="text-3xl font-bold text-center mb-12 text-primary">How It Works</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mx-auto mb-4">1</div>
-              <h3 className="font-medium mb-2">Enter URL</h3>
-              <p className="text-sm text-secondary">Input the website address you want to visit</p>
-            </div>
-            
-            <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mx-auto mb-4">2</div>
-              <h3 className="font-medium mb-2">We Fetch Content</h3>
-              <p className="text-sm text-secondary">Our servers request the content on your behalf</p>
-            </div>
-            
-            <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mx-auto mb-4">3</div>
-              <h3 className="font-medium mb-2">Traffic Encrypted</h3>
-              <p className="text-sm text-secondary">All data is securely encrypted</p>
-            </div>
-            
-            <div className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white mx-auto mb-4">4</div>
-              <h3 className="font-medium mb-2">Browse Securely</h3>
-              <p className="text-sm text-secondary">Access content privately and securely</p>
-            </div>
-          </div>
-        </section>
+
       </div>
     </div>
   );
