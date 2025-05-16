@@ -74,8 +74,13 @@ export default function ProxyForm() {
         description: "You are now browsing securely through our proxy.",
       });
       
-      // Redirect to the proxied content
-      window.open(`/api/proxy?url=${encodeURIComponent(data.url)}`, "_blank");
+      // Redirect to the proxied content with all parameters
+      const params = new URLSearchParams();
+      params.append('url', data.url);
+      if (data.hideReferer) params.append('hideReferer', 'true');
+      if (data.removeCookies) params.append('removeCookies', 'true');
+      
+      window.open(`/api/proxy?${params.toString()}`, "_blank");
       
       // Reset the form
       form.reset({

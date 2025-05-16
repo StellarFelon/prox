@@ -5,8 +5,16 @@ import { createProxyHandler, extractVisitorInfo } from "./proxyMiddleware";
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import { z } from 'zod';
-import { pg } from '@neondatabase/serverless';
 import connectPgSimple from 'connect-pg-simple';
+import { Pool } from '@neondatabase/serverless';
+
+// Extend session interface to include our custom properties
+declare module 'express-session' {
+  interface SessionData {
+    adminId?: number;
+    username?: string;
+  }
+}
 
 const PgSession = connectPgSimple(session);
 
@@ -62,8 +70,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Proxy route
+  // Proxy routes - support both GET and POST
   apiRouter.post('/proxy', createProxyHandler());
+  apiRouter.get('/proxy', createProxyHandler());
 
   // Auth routes
   apiRouter.post('/admin/login', async (req, res) => {

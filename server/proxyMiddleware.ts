@@ -66,8 +66,24 @@ export const logProxyRequest = async (
 // Create proxy middleware generator
 export const createProxyHandler = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // The target URL comes from the request body
-    const targetUrl = req.body.url;
+    // Get the target URL from either query parameters (GET) or request body (POST)
+    let targetUrl = req.method === 'GET' ? req.query.url as string : req.body.url;
+    const hideReferer = req.method === 'GET' 
+      ? req.query.hideReferer === 'true' 
+      : req.body.hideReferer === true;
+    const removeCookies = req.method === 'GET' 
+      ? req.query.removeCookies === 'true' 
+      : req.body.removeCookies === true;
+    
+    // Add the parameters to the body for consistent handling
+    if (req.method === 'GET') {
+      req.body = {
+        ...req.body,
+        url: targetUrl,
+        hideReferer,
+        removeCookies
+      };
+    }
     
     if (!targetUrl) {
       return res.status(400).json({ message: 'No URL provided' });
