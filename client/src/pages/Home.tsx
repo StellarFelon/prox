@@ -43,18 +43,11 @@ export default function Home() {
           
           <div className="md:w-1/2">
             <div className="rounded-xl shadow-lg overflow-hidden">
-              <div style={{height: '0', paddingBottom: '75%', position: 'relative'}}>
-                <iframe 
-                  width="360" 
-                  height="270" 
-                  style={{position: 'absolute', top: '0', left: '0', width: '100%', height: '100%'}} 
-                  frameBorder="0" 
-                  src="https://imgflip.com/embed/8swlnw"
-                />
-              </div>
-              <p className="text-sm text-center mt-2">
-                <a href="https://imgflip.com/gif/8swlnw" className="text-primary hover:underline">via Imgflip</a>
-              </p>
+              <img 
+                src="/8swlnw (1).gif"
+                alt="Network security visualization" 
+                className="w-full h-auto"
+              />
             </div>
           </div>
         </div>
