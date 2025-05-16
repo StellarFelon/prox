@@ -66,7 +66,7 @@ export default function ProxyForm() {
       });
       
       // Open the proxy URL in a new tab
-      window.open(`/api/proxy?${params.toString()}`, "_blank");
+      window.open(`/api/proxy?url=${encodeURIComponent(data.url)}${data.hideReferer ? '&hideReferer=true' : ''}${data.removeCookies ? '&removeCookies=true' : ''}`, "_blank");
       
       // Reset the form
       form.reset({
