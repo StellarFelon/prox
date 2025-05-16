@@ -134,19 +134,26 @@ export const createProxyHandler = () => {
       // Log the request first
       await logProxyRequest(req, targetUrl, 'success');
 
+      const targetObj = new URL(targetUrl); // Parse the target URL
+
       // Setup proxy options
       const options = {
-        target: targetUrl,
+        target: `${targetObj.protocol}//${targetObj.host}`, // e.g., https://google.com
         changeOrigin: true,
         followRedirects: true,
         secure: false, // Allow insecure SSL certificates for proxy
         ws: false, // Don't proxy websockets
         logLevel: 'error',
-        pathRewrite: (path) => {
-          // Remove /api/proxy and any query parameters
-          return path.replace(/\/api\/proxy.*\?url=([^&]+).*$/, '$1');
+        pathRewrite: (path: string, req: Request) => {
+          // path is the original path from the client to the proxy server, e.g., /api/proxy?url=...
+          // We want to use the path and search parameters from the intended targetUrl.
+          let newPath = targetObj.pathname;
+          if (targetObj.search) {
+            newPath += targetObj.search;
+          }
+          return newPath; // e.g., if targetUrl was https://google.com/search?q=foo, this returns /search?q=foo
         },
-        onProxyReq: (proxyReq: any) => {
+        onProxyReq: (proxyReq: any, req: Request, res: Response) => {
           // Remove referer if requested
           if (hideReferer) {
             proxyReq.removeHeader('referer');

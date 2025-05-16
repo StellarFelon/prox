@@ -5,8 +5,7 @@ import { createProxyHandler, extractVisitorInfo } from "./proxyMiddleware";
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import { z } from 'zod';
-import connectPgSimple from 'connect-pg-simple';
-import { Pool } from '@neondatabase/serverless';
+import connectSqlite3 from 'connect-sqlite3';
 
 // Extend session interface to include our custom properties
 declare module 'express-session' {
@@ -16,13 +15,14 @@ declare module 'express-session' {
   }
 }
 
-const PgSession = connectPgSimple(session);
+const SQLiteStore = connectSqlite3(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup session
-  const sessionStore = new PgSession({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true
+  const sessionStore = new SQLiteStore({
+    dir: './db', // Directory to store session files
+    db: 'sessions.sqlite', // Session database filename
+    table: 'sessions' // Optional: table name, defaults to 'sessions'
   });
 
   app.use(session({

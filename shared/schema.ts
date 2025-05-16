@@ -1,59 +1,67 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User table (extended from the original schema)
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+// User table
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   role: text("role").notNull().default("user"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull().default(new Date()),
 });
 
 // Admin table
-export const admins = pgTable("admins", {
-  id: serial("id").primaryKey(),
+export const admins = sqliteTable("admins", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email").notNull(),
-  lastLogin: timestamp("last_login"),
+  lastLogin: integer("last_login", { mode: "timestamp_ms" }),
 });
 
 // Visitor tracking table
-export const visitors = pgTable("visitors", {
-  id: serial("id").primaryKey(),
+export const visitors = sqliteTable("visitors", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   ipAddress: text("ip_address").notNull(),
   fingerprint: text("fingerprint"),
   userAgent: text("user_agent"),
-  blocked: boolean("blocked").notNull().default(false),
-  firstSeen: timestamp("first_seen").notNull().defaultNow(),
-  lastSeen: timestamp("last_seen").notNull().defaultNow(),
+  blocked: integer("blocked", { mode: "boolean" }).notNull().default(false),
+  firstSeen: integer("first_seen", { mode: "timestamp_ms" }).notNull().default(new Date()),
+  lastSeen: integer("last_seen", { mode: "timestamp_ms" }).notNull().default(new Date()),
 });
 
 // Proxy request logs
-export const proxyRequests = pgTable("proxy_requests", {
-  id: serial("id").primaryKey(),
+export const proxyRequests = sqliteTable("proxy_requests", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   visitorId: integer("visitor_id").references(() => visitors.id),
   url: text("url").notNull(),
   status: text("status").notNull(),
   responseStatus: integer("response_status"),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
-  hideReferer: boolean("hide_referer").notNull().default(false),
-  removeCookies: boolean("remove_cookies").notNull().default(false),
-  headers: jsonb("headers"),
+  timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull().default(new Date()),
+  hideReferer: integer("hide_referer", { mode: "boolean" }).notNull().default(false),
+  removeCookies: integer("remove_cookies", { mode: "boolean" }).notNull().default(false),
+  headers: text("headers", { mode: "json" }), // Store JSON as text
 });
 
 // System settings
-export const settings = pgTable("settings", {
-  id: serial("id").primaryKey(),
+export const settings = sqliteTable("settings", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   key: text("key").notNull().unique(),
   value: text("value").notNull(),
   description: text("description"),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull().default(new Date()),
 });
 
-// Create insert schemas
+// User inputs table
+export const userInputs = sqliteTable("user_inputs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  visitorId: integer("visitor_id").references(() => visitors.id),
+  input: text("input").notNull(),
+  timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull().default(new Date()),
+});
+
+// Create insert schemas (These should remain largely the same, but types will be inferred from the new schema)
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -88,6 +96,12 @@ export const insertSettingSchema = createInsertSchema(settings).pick({
   description: true,
 });
 
+export const insertUserInputSchema = createInsertSchema(userInputs).pick({
+    visitorId: true,
+    input: true,
+});
+
+
 // Type exports
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -103,14 +117,6 @@ export type ProxyRequest = typeof proxyRequests.$inferSelect;
 
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type Setting = typeof settings.$inferSelect;
-
-// User inputs table
-export const userInputs = pgTable("user_inputs", {
-  id: serial("id").primaryKey(),
-  visitorId: integer("visitor_id").references(() => visitors.id),
-  input: text("input").notNull(),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
-});
 
 export type UserInput = typeof userInputs.$inferSelect;
 export type InsertUserInput = typeof userInputs.$inferInsert;
