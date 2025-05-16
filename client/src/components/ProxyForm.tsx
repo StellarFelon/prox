@@ -53,33 +53,19 @@ export default function ProxyForm() {
         ? { "x-fingerprint": fingerprint }
         : undefined;
       
-      const response = await fetch("/api/proxy", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(headers || {})
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to access the site");
-      }
-      
-      // For simplicity, we'll open the proxied content in a new tab
-      // In a real implementation, you might want to display it within an iframe or handle differently
-      toast({
-        title: "Success!",
-        description: "You are now browsing securely through our proxy.",
-      });
-      
-      // Redirect to the proxied content with all parameters
+      // Construct URL for GET proxy request
       const params = new URLSearchParams();
       params.append('url', data.url);
       if (data.hideReferer) params.append('hideReferer', 'true');
       if (data.removeCookies) params.append('removeCookies', 'true');
       
+      // Display success toast
+      toast({
+        title: "Success!",
+        description: "You are now browsing securely through our proxy.",
+      });
+      
+      // Open the proxy URL in a new tab
       window.open(`/api/proxy?${params.toString()}`, "_blank");
       
       // Reset the form

@@ -66,88 +66,87 @@ export const logProxyRequest = async (
 // Create proxy middleware generator
 export const createProxyHandler = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // Get the target URL from either query parameters (GET) or request body (POST)
-    let targetUrl = req.method === 'GET' ? req.query.url as string : req.body.url;
-    const hideReferer = req.method === 'GET' 
-      ? req.query.hideReferer === 'true' 
-      : req.body.hideReferer === true;
-    const removeCookies = req.method === 'GET' 
-      ? req.query.removeCookies === 'true' 
-      : req.body.removeCookies === true;
-    
-    // Add the parameters to the body for consistent handling
-    if (req.method === 'GET') {
-      req.body = {
-        ...req.body,
-        url: targetUrl,
-        hideReferer,
-        removeCookies
-      };
-    }
-    
-    if (!targetUrl) {
-      return res.status(400).json({ message: 'No URL provided' });
-    }
-    
     try {
-      // Parse the URL to make sure it's valid
-      new URL(targetUrl);
-    } catch (error) {
-      return res.status(400).json({ message: 'Invalid URL format' });
-    }
-    
-    // Check if the visitor is blocked
-    const blocked = await isVisitorBlocked(req);
-    if (blocked) {
-      await logProxyRequest(req, targetUrl, 'blocked');
-      return res.status(403).json({ message: 'Access blocked by administrator' });
-    }
-    
-    // Configure proxy options
-    const options = {
-      target: targetUrl,
-      changeOrigin: true,
-      selfHandleResponse: false,
-      onProxyReq: (proxyReq: any, req: Request) => {
-        // Remove referer if requested
-        if (req.body.hideReferer) {
-          proxyReq.removeHeader('referer');
-          proxyReq.removeHeader('origin');
-        }
-        
-        // Remove cookies if requested
-        if (req.body.removeCookies) {
-          proxyReq.removeHeader('cookie');
-        }
-        
-        // Fix request body
-        if (req.body) {
-          fixRequestBody(proxyReq, req);
-        }
-      },
-      onProxyRes: async (proxyRes: any, req: Request) => {
-        // Log the proxy request
-        await logProxyRequest(
-          req, 
-          targetUrl, 
-          'success', 
-          proxyRes.statusCode
-        );
-        
-        // Remove cookies from response if requested
-        if (req.body.removeCookies) {
-          delete proxyRes.headers['set-cookie'];
-        }
-      },
-      onError: async (err: Error, req: Request, res: Response) => {
-        console.error('Proxy error:', err);
-        await logProxyRequest(req, targetUrl, 'error');
-        res.status(500).json({ message: 'Proxy error', error: err.message });
+      // Get the target URL from either query parameters (GET) or request body (POST)
+      let targetUrl = req.method === 'GET' ? req.query.url as string : req.body.url;
+      const hideReferer = req.method === 'GET' 
+        ? req.query.hideReferer === 'true' 
+        : req.body.hideReferer === true;
+      const removeCookies = req.method === 'GET' 
+        ? req.query.removeCookies === 'true' 
+        : req.body.removeCookies === true;
+      
+      if (!targetUrl) {
+        return res.status(400).json({ message: 'No URL provided' });
       }
-    };
-    
-    // Create and apply the proxy middleware
-    const proxyMiddleware = createProxyMiddleware(options);
-    return proxyMiddleware(req, res, next);
+      
+      // Parse the URL to make sure it's valid
+      const parsedUrl = new URL(targetUrl);
+      
+      // Check if the visitor is blocked
+      const blocked = await isVisitorBlocked(req);
+      if (blocked) {
+        await logProxyRequest(req, targetUrl, 'blocked');
+        return res.status(403).json({ message: 'Access blocked by administrator' });
+      }
+      
+      // Log successful request before proxying
+      await logProxyRequest(req, targetUrl, 'success');
+
+      // For POST requests, redirect to GET with all parameters
+      if (req.method === 'POST') {
+        const params = new URLSearchParams();
+        params.append('url', targetUrl);
+        if (hideReferer) params.append('hideReferer', 'true');
+        if (removeCookies) params.append('removeCookies', 'true');
+        
+        return res.json({ 
+          success: true, 
+          message: 'Proxy request successful',
+          url: `/api/proxy?${params.toString()}`
+        });
+      }
+      
+      // Only for GET requests, actually proxy the content
+      // Configure proxy options
+      const options = {
+        target: targetUrl,
+        changeOrigin: true,
+        followRedirects: true,
+        secure: true,
+        onProxyReq: (proxyReq: any, req: Request) => {
+          // Remove referer if requested
+          if (hideReferer) {
+            proxyReq.removeHeader('referer');
+            proxyReq.removeHeader('origin');
+          }
+          
+          // Remove cookies if requested
+          if (removeCookies) {
+            proxyReq.removeHeader('cookie');
+          }
+        },
+        onProxyRes: (proxyRes: any) => {
+          // Remove cookies from response if requested
+          if (removeCookies) {
+            delete proxyRes.headers['set-cookie'];
+          }
+        },
+        onError: (err: Error) => {
+          console.error('Proxy error:', err);
+          res.status(500).json({ message: 'Proxy error', error: err.message });
+        }
+      };
+      
+      // Create and apply the proxy middleware
+      const proxyMiddleware = createProxyMiddleware(options);
+      return proxyMiddleware(req, res, next);
+    } catch (error) {
+      console.error('Proxy handler error:', error);
+      return res.status(500).json({ 
+        message: 'Proxy error', 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
   };
 };
