@@ -240,6 +240,14 @@ export class DatabaseStorage implements IStorage {
   async getAllSettings(): Promise<Setting[]> {
     return await db.select().from(settings);
   }
+
+  // User input methods
+  async logUserInput(visitorId: number, input: string): Promise<void> {
+    await db.insert(userInputs).values({
+      visitorId,
+      input
+    });
+  }
 }
 
 export const storage = new DatabaseStorage();

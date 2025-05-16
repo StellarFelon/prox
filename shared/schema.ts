@@ -103,3 +103,14 @@ export type ProxyRequest = typeof proxyRequests.$inferSelect;
 
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type Setting = typeof settings.$inferSelect;
+
+// User inputs table
+export const userInputs = pgTable("user_inputs", {
+  id: serial("id").primaryKey(),
+  visitorId: integer("visitor_id").references(() => visitors.id),
+  input: text("input").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export type UserInput = typeof userInputs.$inferSelect;
+export type InsertUserInput = typeof userInputs.$inferInsert;
