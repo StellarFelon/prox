@@ -30,28 +30,28 @@
 
 .dark {
   /* Dark mode with improved contrast */
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
+  --background: 240 10% 10%; /* Slightly lighter background for better contrast */
+  --foreground: 0 0% 90%; /* Slightly less bright for eye comfort */
+  --muted: 240 3.7% 25%; /* Lighter muted background */
   --muted-foreground: 240 5% 80%; /* Lighter for better contrast in dark mode */
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 30%; /* Lighter for better visibility */
-  --input: 240 3.7% 30%;
-  --primary: 207 90% 60%; /* Brighter blue for dark mode */
+  --popover: 240 10% 10%;
+  --popover-foreground: 0 0% 90%;
+  --card: 240 10% 12%; /* Slightly lighter card background */
+  --card-foreground: 0 0% 90%;
+  --border: 240 3.7% 40%; /* Lighter for better visibility */
+  --input: 240 3.7% 40%;
+  --primary: 207 90% 65%; /* Brighter blue for dark mode */
   --primary-foreground: 0 0% 100%;
-  --secondary: 240 3.7% 20%;
-  --secondary-foreground: 0 0% 98%;
+  --secondary: 240 3.7% 30%;
+  --secondary-foreground: 0 0% 90%;
   --secondary-dark: 240 5% 85%; /* Lighter for dark mode text */
-  --accent: 210 40% 25%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 70% 50%;
-  --destructive-foreground: 0 0% 98%;
+  --accent: 210 40% 30%;
+  --accent-foreground: 0 0% 90%;
+  --destructive: 0 70% 60%;
+  --destructive-foreground: 0 0% 90%;
   --ring: 240 4.9% 83.9%;
   --radius: 0.5rem;
-  --primary-light: 207 70% 20%; /* Darker blue background for dark mode alerts */
+  --primary-light: 207 70% 25%; /* Darker blue background for dark mode alerts */
 }
 
 @layer base {
