@@ -33,8 +33,8 @@ export default function Home() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div className="md:w-1/2">
-            <h1 className="text-4xl font-bold mb-4 text-primary">Secure Web Browsing</h1>
-            <p className="text-lg mb-6 text-secondary">Browse privately with our secure proxy service. Bypass network restrictions and mask your IP address with just a few clicks.</p>
+            <h1 className="text-4xl font-bold mb-4 text-foreground">Secure Web Browsing</h1>
+            <p className="text-lg mb-6 font-medium text-foreground">Browse privately with our secure proxy service. Bypass network restrictions and mask your IP address with just a few clicks.</p>
             
             <div className="mb-6">
               <ProxyForm />

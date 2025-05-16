@@ -3,49 +3,56 @@
 @tailwind utilities;
 
 :root {
-      --background: 0 0% 100%;
---foreground: 20 14.3% 4.1%;
---muted: 60 4.8% 95.9%;
---muted-foreground: 25 5.3% 44.7%;
---popover: 0 0% 100%;
---popover-foreground: 20 14.3% 4.1%;
---card: 0 0% 100%;
---card-foreground: 20 14.3% 4.1%;
---border: 20 5.9% 90%;
---input: 20 5.9% 90%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 60 4.8% 95.9%;
---secondary-foreground: 24 9.8% 10%;
---accent: 60 4.8% 95.9%;
---accent-foreground: 24 9.8% 10%;
---destructive: 0 84.2% 60.2%;
---destructive-foreground: 60 9.1% 97.8%;
---ring: 20 14.3% 4.1%;
---radius: 0.5rem;
-  }
-  .dark {
-      --background: 240 10% 3.9%;
---foreground: 0 0% 98%;
---muted: 240 3.7% 15.9%;
---muted-foreground: 240 5% 64.9%;
---popover: 240 10% 3.9%;
---popover-foreground: 0 0% 98%;
---card: 240 10% 3.9%;
---card-foreground: 0 0% 98%;
---border: 240 3.7% 15.9%;
---input: 240 3.7% 15.9%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 240 3.7% 15.9%;
---secondary-foreground: 0 0% 98%;
---accent: 240 3.7% 15.9%;
---accent-foreground: 0 0% 98%;
---destructive: 0 62.8% 30.6%;
---destructive-foreground: 0 0% 98%;
---ring: 240 4.9% 83.9%;
---radius: 0.5rem;
-  }
+  /* Light mode with improved contrast */
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 30%; /* Darker for better contrast */
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 80%; /* Darker for better visibility */
+  --input: 20 5.9% 80%;
+  --primary: 207 90% 40%; /* Darker blue for better contrast */
+  --primary-foreground: 0 0% 100%; /* Pure white for best contrast on blue */
+  --secondary: 220 13% 91%;
+  --secondary-foreground: 24 9.8% 10%;
+  --secondary-dark: 220 13% 25%; /* Added for secondary text that needs more contrast */
+  --accent: 210 40% 90%;
+  --accent-foreground: 222 47% 11%;
+  --destructive: 0 84.2% 50%; /* Adjusted red */
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  --primary-light: 207 90% 95%; /* Light blue background for alerts/notices */
+}
+
+.dark {
+  /* Dark mode with improved contrast */
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 80%; /* Lighter for better contrast in dark mode */
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 30%; /* Lighter for better visibility */
+  --input: 240 3.7% 30%;
+  --primary: 207 90% 60%; /* Brighter blue for dark mode */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 3.7% 20%;
+  --secondary-foreground: 0 0% 98%;
+  --secondary-dark: 240 5% 85%; /* Lighter for dark mode text */
+  --accent: 210 40% 25%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+  --primary-light: 207 70% 20%; /* Darker blue background for dark mode alerts */
+}
 
 @layer base {
   * {

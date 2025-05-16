@@ -92,25 +92,25 @@ export default function ProxyForm() {
   };
 
   return (
-    <Card className="shadow-lg border-0 rounded-xl overflow-hidden">
+    <Card className="shadow-lg border-2 border-border rounded-xl overflow-hidden">
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-secondary font-medium">Enter URL to browse securely</FormLabel>
+                  <FormLabel className="text-foreground text-base font-semibold">Enter URL to browse securely</FormLabel>
                   <div className="relative">
                     <FormControl>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <LinkIcon className="h-5 w-5 text-gray-400" />
+                          <LinkIcon className="h-5 w-5 text-primary" />
                         </div>
                         <Input
                           placeholder="https://example.com"
-                          className="pl-10 pr-10 py-6 bg-[#F7F2FA] border-[#79747E] focus:border-primary focus:shadow-sm"
+                          className="pl-10 pr-10 py-6 bg-background border-2 border-input focus:border-primary focus:ring-1 focus:ring-primary"
                           {...field}
                         />
                         {field.value && (
@@ -119,7 +119,7 @@ export default function ProxyForm() {
                               type="button"
                               variant="ghost"
                               size="sm"
-                              className="h-8 w-8 p-0 text-gray-400 hover:text-primary"
+                              className="h-8 w-8 p-0 text-foreground hover:text-primary"
                               onClick={clearUrl}
                             >
                               <XIcon className="h-5 w-5" />
@@ -129,27 +129,29 @@ export default function ProxyForm() {
                       </div>
                     </FormControl>
                   </div>
-                  <FormDescription className="text-xs text-muted-foreground">
+                  <FormDescription className="text-sm font-medium text-foreground">
                     Enter the complete URL including https:// or http://
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage className="font-medium" />
                 </FormItem>
               )}
             />
 
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-3 bg-accent/30 p-3 rounded-lg">
+              <h3 className="font-semibold text-foreground">Privacy Options</h3>
               <FormField
                 control={form.control}
                 name="hideReferer"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="border-2"
                       />
                     </FormControl>
-                    <FormLabel className="text-sm font-normal cursor-pointer">
+                    <FormLabel className="text-base font-medium cursor-pointer text-foreground">
                       Hide referer information
                     </FormLabel>
                   </FormItem>
@@ -160,14 +162,15 @@ export default function ProxyForm() {
                 control={form.control}
                 name="removeCookies"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="border-2"
                       />
                     </FormControl>
-                    <FormLabel className="text-sm font-normal cursor-pointer">
+                    <FormLabel className="text-base font-medium cursor-pointer text-foreground">
                       Remove cookies and tracking
                     </FormLabel>
                   </FormItem>
@@ -177,7 +180,7 @@ export default function ProxyForm() {
 
             <Button
               type="submit"
-              className="w-full py-6 rounded-full text-sm font-medium tracking-wide bg-primary hover:bg-primary-dark text-white"
+              className="w-full py-6 rounded-full text-base font-medium tracking-wide bg-primary hover:opacity-90 text-primary-foreground"
               disabled={loading}
             >
               {loading ? "Processing..." : "Browse Securely"}
