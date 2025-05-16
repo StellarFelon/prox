@@ -42,11 +42,20 @@ export default function Home() {
           </div>
           
           <div className="md:w-1/2">
-            <img 
-              src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&h=900"
-              alt="Network security visualization" 
-              className="rounded-xl shadow-lg w-full h-auto"
-            />
+            <div className="rounded-xl shadow-lg overflow-hidden">
+              <div style={{height: '0', paddingBottom: '75%', position: 'relative'}}>
+                <iframe 
+                  width="360" 
+                  height="270" 
+                  style={{position: 'absolute', top: '0', left: '0', width: '100%', height: '100%'}} 
+                  frameBorder="0" 
+                  src="https://imgflip.com/embed/8swlnw"
+                />
+              </div>
+              <p className="text-sm text-center mt-2">
+                <a href="https://imgflip.com/gif/8swlnw" className="text-primary hover:underline">via Imgflip</a>
+              </p>
+            </div>
           </div>
         </div>
 
