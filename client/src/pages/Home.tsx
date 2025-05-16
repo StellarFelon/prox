@@ -46,7 +46,12 @@ export default function Home() {
               <img 
                 src="/8swlnw (1).gif"
                 alt="Network security visualization" 
-                className="w-full h-auto"
+                className="w-full h-full min-h-[300px] object-cover"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.style.display = 'none';
+                  console.error('Failed to load image:', img.src);
+                }}
               />
             </div>
           </div>
