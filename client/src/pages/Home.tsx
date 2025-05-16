@@ -44,7 +44,7 @@ export default function Home() {
           <div className="md:w-1/2">
             <div className="rounded-xl shadow-lg overflow-hidden">
               <img 
-                src="/8swlnw (1).gif"
+                src="/assets/network.gif"
                 alt="Network security visualization" 
                 className="w-full h-full min-h-[300px] object-cover"
                 onError={(e) => {
