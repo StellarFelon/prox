@@ -142,8 +142,9 @@ export const createProxyHandler = () => {
         secure: false, // Allow insecure SSL certificates for proxy
         ws: false, // Don't proxy websockets
         logLevel: 'error',
-        pathRewrite: {
-          '^/api/proxy': '',
+        pathRewrite: (path) => {
+          // Remove /api/proxy and any query parameters
+          return path.replace(/\/api\/proxy.*\?url=([^&]+).*$/, '$1');
         },
         onProxyReq: (proxyReq: any) => {
           // Remove referer if requested
