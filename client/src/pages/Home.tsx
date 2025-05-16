@@ -39,14 +39,6 @@ export default function Home() {
             <div className="mb-6">
               <ProxyForm />
             </div>
-            
-            <Alert className="bg-primary-light border-l-4 border-primary">
-              <ShieldIcon className="h-5 w-5 text-primary" />
-              <AlertTitle className="text-primary font-medium">Your privacy is our priority</AlertTitle>
-              <AlertDescription className="text-secondary-dark">
-                Your browsing data is encrypted and we don't store your activity logs.
-              </AlertDescription>
-            </Alert>
           </div>
           
           <div className="md:w-1/2">
