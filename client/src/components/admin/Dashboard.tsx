@@ -78,52 +78,52 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-primary-light rounded-lg overflow-hidden">
+        <Card className="bg-primary-light dark:bg-blue-900/30 rounded-lg overflow-hidden border-2">
           <CardContent className="p-4">
-            <h3 className="text-lg font-medium text-primary mb-1">Total Requests</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Total Requests</h3>
             {isLoadingStats ? (
               <Skeleton className="h-10 w-24" />
             ) : (
               <>
-                <p className="text-3xl font-bold">{stats?.totalRequests.toLocaleString() || "0"}</p>
-                <p className="text-sm text-secondary">All time requests processed</p>
+                <p className="text-3xl font-bold text-foreground">{stats?.totalRequests.toLocaleString() || "0"}</p>
+                <p className="text-sm font-medium text-foreground">All time requests processed</p>
               </>
             )}
           </CardContent>
         </Card>
         
-        <Card className="bg-[#E8DEF8] rounded-lg overflow-hidden">
+        <Card className="bg-accent/30 rounded-lg overflow-hidden border-2">
           <CardContent className="p-4">
-            <h3 className="text-lg font-medium text-secondary mb-1">Active Users</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Active Users</h3>
             {isLoadingStats ? (
               <Skeleton className="h-10 w-24" />
             ) : (
               <>
-                <p className="text-3xl font-bold">{stats?.activeUsers.toLocaleString() || "0"}</p>
-                <p className="text-sm text-secondary">Currently online</p>
+                <p className="text-3xl font-bold text-foreground">{stats?.activeUsers.toLocaleString() || "0"}</p>
+                <p className="text-sm font-medium text-foreground">Currently online</p>
               </>
             )}
           </CardContent>
         </Card>
         
-        <Card className="bg-[#FFD8E4] rounded-lg overflow-hidden">
+        <Card className="bg-red-50 dark:bg-red-900/20 rounded-lg overflow-hidden border-2">
           <CardContent className="p-4">
-            <h3 className="text-lg font-medium text-tertiary mb-1">Blocked Attempts</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Blocked Attempts</h3>
             {isLoadingStats ? (
               <Skeleton className="h-10 w-24" />
             ) : (
               <>
-                <p className="text-3xl font-bold">{stats?.blockedAttempts.toLocaleString() || "0"}</p>
-                <p className="text-sm text-secondary">In the past 24 hours</p>
+                <p className="text-3xl font-bold text-foreground">{stats?.blockedAttempts.toLocaleString() || "0"}</p>
+                <p className="text-sm font-medium text-foreground">In the past 24 hours</p>
               </>
             )}
           </CardContent>
         </Card>
       </div>
       
-      <Card>
+      <Card className="border-2">
         <CardContent className="p-4">
-          <h3 className="text-lg font-medium mb-4">Traffic Overview</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-4">Traffic Overview</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
@@ -132,18 +132,26 @@ export default function Dashboard() {
               >
                 <defs>
                   <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6750A4" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#6750A4" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
+                <XAxis dataKey="name" tick={{fill: 'var(--foreground)'}} />
+                <YAxis tick={{fill: 'var(--foreground)'}} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--background))',
+                    borderColor: 'hsl(var(--border))',
+                    color: 'hsl(var(--foreground))'
+                  }}
+                  labelStyle={{color: 'hsl(var(--foreground))'}}
+                  itemStyle={{color: 'hsl(var(--foreground))'}}
+                />
                 <Area 
                   type="monotone" 
                   dataKey="requests" 
-                  stroke="#6750A4" 
+                  stroke="hsl(var(--primary))" 
                   fillOpacity={1} 
                   fill="url(#colorRequests)" 
                 />
@@ -153,20 +161,20 @@ export default function Dashboard() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="border-2">
         <CardContent className="p-4">
-          <h3 className="text-lg font-medium mb-4">Recent Activity</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-4">Recent Activity</h3>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted/50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Timestamp</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">IP Address</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Request URL</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Status</th>
+                  <th scope="col" className="px-6 py-3 text-left text-sm font-semibold text-foreground uppercase tracking-wider">Timestamp</th>
+                  <th scope="col" className="px-6 py-3 text-left text-sm font-semibold text-foreground uppercase tracking-wider">IP Address</th>
+                  <th scope="col" className="px-6 py-3 text-left text-sm font-semibold text-foreground uppercase tracking-wider">Request URL</th>
+                  <th scope="col" className="px-6 py-3 text-left text-sm font-semibold text-foreground uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-background divide-y divide-border">
                 {isLoadingActivity ? (
                   Array.from({ length: 3 }).map((_, index) => (
                     <tr key={index}>
@@ -187,26 +195,26 @@ export default function Dashboard() {
                 ) : recentActivity && recentActivity.length > 0 ? (
                   recentActivity.map((activity: RecentActivity) => (
                     <tr key={activity.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-dark">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                         {new Date(activity.timestamp).toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-dark">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                         {activity.ipAddress || "Unknown"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-dark">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                         {activity.url}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {activity.status === "success" ? (
-                          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+                          <Badge variant="outline" className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border-green-300 dark:border-green-800 font-medium">
                             Success
                           </Badge>
                         ) : activity.status === "blocked" ? (
-                          <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">
+                          <Badge variant="outline" className="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-medium">
                             Blocked
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                          <Badge variant="outline" className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800 font-medium">
                             {activity.status}
                           </Badge>
                         )}
@@ -215,7 +223,7 @@ export default function Dashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={4} className="px-6 py-4 text-center text-base font-medium text-foreground">
                       No recent activity found
                     </td>
                   </tr>
